@@ -3,19 +3,9 @@
 
 # # Application 
 
-# In[34]:
-
-
-# kenny 2091200208332
-# Irene 2090850077725
-# Michael 2090660372621  -> no decalre sport
-
-
-# In[13]:
-
 
 # please key-in any member id which claimed favorite sport
-potential_sport(2090850077725)
+potential_sport(/-----key_in_member_id-----/)
 
 
 # In[14]:
@@ -27,23 +17,6 @@ print("The random loyalty card number is :" +" "+ran_member)
 potential_sport(ran_member)
 
 
-# # Information
-Next Tag
-
-Tag  
-
-Regular (advance) / Normal user (beginner) +　customer type by age
-
-Shirley	Outdoor OPECO	EDM/Message	"Along with the model selection, how to identify the right members to send the EDM/Messages to bring more traffics?
-- User level
-- Purchase power (how much the member can afford?)
-- Age period
-- Region differences"		Michael will take this.Trend for modle selectiong
-
-90% of market understaing 
-
-send different message to the market
-# ------
 
 # # Process
 
@@ -72,8 +45,6 @@ import random
 
 # In[5]:
 
-
-# 執行 query 的 function
 def execute_query(query):
     try:
         conn = psycopg2.connect(dbname=DatabaseName, host=ClusterEndpoint, port=Port, user=UserName, password=Password)
@@ -121,8 +92,6 @@ member_declare_sport_result_df.columns=['loyalty_card_num','sport_id','sport_nam
 
 # In[7]:
 
-
-# 你宣稱的運動_輸入你的會員就會出現你宣稱的運動_用在輸出總結果的時候看你宣稱的運動
 def member_declare(member_id):
     #print(query_result_df[query_result_df['loyalty_card_num'] == str(x)])
     spid = (member_declare_sport_result_df[member_declare_sport_result_df['loyalty_card_num'] == str(member_id)])
@@ -135,51 +104,22 @@ def member_declare(member_id):
 #  ['CANYONING', 'JOGGING', 'SWIMMING']
 
 
-# # 會員的運動類型(隨機)
 
 # In[8]:
 
 
-# 輸入會員id然後就算給你一個隨機(從多個中選一個)的會員的運動類型
-# 透過這個數字去找出[推薦的商品]和[潛在的商品]
-#  -推薦商品 - 根據喜愛運動type ---> 之後再根據type去找出和你一樣的人 ---> 推薦類似的商品 
-
 def member_declare_type(member_id):
        #print(query_result_df[query_result_df['loyalty_card_num'] == str(x)])
     cfcode = (member_declare_sport_result_df[member_declare_sport_result_df['loyalty_card_num'] == str(member_id)])
-       #print(cfcode)
- #轉成list
     cfcode_list = list(set(cfcode['classificaiton_code']))
-       #print(cfcode_list)
- # 從中random取出一個數(從會員的多個運動類型) --> 從多個隨機的運動中選取一個
     cfcode_list_random = random.choice(cfcode_list)
-       #print(type(cfcode_list_random))
- #將string轉成int(運動類型)
     cfcode_list_random_int = list(map(int,cfcode_list_random))
-       #print(type(cfcode_list_random_int))
-    #找出頻率最高的值 (應該是沒有了！) -->改成隨機的值！
-       #cfcode_list_max = max(cfcode_list,key=a.count)
-       #print(cfcode_list_max )
-       #return cfcode_list_max
     cfcode_list_random_int_num = cfcode_list_random_int[0]    
     return cfcode_list_random_int_num
-
-# member_declare_type_random = member_declare_type(2090538722794)
-# print(member_declare_type_random)
-# 1
-
-
-# In[ ]:
-
-
-
 
 
 # In[9]:
 
-
-# POTEINTIAL RANDOM SPORT：四個主要運動類型中 X 10個主要運動(後來有變動surfing不太適合) - 每個運動類別都會隨機跳一個運動給你
-# !! 這裡少了 sport05 之後再補上來
 
 def sport01():
     sport01 = [['Camping',9295],['Hiking',9295],['Trekking',1335]]
@@ -206,17 +146,11 @@ def sport04():
     return sport04_random
 
 
-# y = sport04()
-# print(y[0])
-# Biking
-
 
 # #  All product selection & recommendation
 
 # In[10]:
 
-
-# 推薦商品清單是根據該品牌的前20大銷售商品
 sport_top_sale_by_brand= '''
 select *
 from dtm_tw.taiwan_cdp_tag_product_sport_type
@@ -232,21 +166,15 @@ sport_top_sale_by_brand_result_df.columns=['count','brand_id','brand_name','mode
 
 
 def prod_recom(bra_id):
-    # 隨機數字
     a = random.randint(0,19)
     b = random.randint(0,19)
     product_recommendation_by_type = sport_top_sale_by_brand_result_df[sport_top_sale_by_brand_result_df['brand_id'] == str(bra_id)]
-    #print(product_recommendation_by_type)
-    # 篩選所需要的欄位
     sport_type = product_recommendation_by_type['sport_type']
     brand_id = product_recommendation_by_type['brand_id']
     model_r3 = product_recommendation_by_type['model_code_r3']
     web_label = product_recommendation_by_type['web_label']
-    # 重新組合欄位
     product_recommendation_by_type_concat = pd.concat([sport_type,brand_id,model_r3,web_label], axis=1) 
-    #重新編排欄位
     product_recommendation_by_type_concat.index = range(len(product_recommendation_by_type_concat))
-    #去掉欄位
     product_recommendation_by_type_concat.columns=['','','','']
     recom = product_recommendation_by_type_concat.loc[a:a+1]
     print("The Product recommend to you is %s" % (recom))
@@ -256,19 +184,9 @@ def prod_recom(bra_id):
 
 # In[12]:
 
-
-#  推薦潛在的運動 - 根據 sport01() ~ sport04()
-#  推薦商品 - 根據喜愛運動 + potential sport ~ 根據 sql 的 table : dtm_tw.taiwan_cdp_tag_product_sport_type
-#  改了 sport01() ~ sport04() 可能要改 sql 的 table : dtm_tw.taiwan_cdp_tag_product_sport_type 所推薦的商品
-
-
 def potential_sport(member_id) :
     declare =  member_declare(member_id)
     print("Your decalred sports :  %s" % (declare))
-        # 宣稱運動的迴圈
-        # print("Your decalred sport is %s" % (i))
-        # for i in declare:
-        #     print("Your decalred sport is %s" % (i))
     member_type = member_declare_type(member_id)
     if member_type == 1:
         potential = sport04()
@@ -296,14 +214,6 @@ def potential_sport(member_id) :
         print("The POTENTIAL random sport to recommend to you is %s" %  (potential[0]) )
         prod_recom(bra_id)
 
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
 
 
 
