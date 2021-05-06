@@ -11,7 +11,7 @@ potential_sport(/-----key_in_member_id-----/)
 # In[14]:
 
 
-# random loyalty card number _ 隨機選取有用的會員卡號
+# random loyalty card number
 ran_member = random.choice(member_declare_sport_result_df['loyalty_card_num'])
 print("The random loyalty card number is :" +" "+ran_member)
 potential_sport(ran_member)
